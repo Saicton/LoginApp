@@ -1,0 +1,10 @@
+
+dependencies {
+
+    ...
+
+    // Externas al proyecto
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.datastore.preferences)
+
+}
