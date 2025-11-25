@@ -1,26 +1,45 @@
 package com.example.loginapp.data
 
-//import com.google.firebase.firestore.auth.User
+import com.example.loginapp.datastore.PrefsDataStore
+import kotlinx.coroutines.flow.Flow
 
-class UserRepository(private val dao: UserDao) {
-    suspend fun register(password: String) {
-        dao.saveUser(User(password = password))
+class UserRepository(
+    private val dao: UserDao,
+    private val prefsDataStore: PrefsDataStore
+) {
+    val isFirstRun: Flow<Boolean> = prefsDataStore.isFirstRun
+
+    // Verificar si un usuario existe
+    suspend fun userExists(username: String): Boolean {
+        val user = dao.getUserByUsername(username)
+        return user != null
     }
 
-    suspend fun login(password: String): Boolean {
-        val user = dao.getUser()
+    // Registrar usuario nuevo
+    suspend fun register(username: String, password: String) {
+        dao.saveUser(User(username = username, password = password))
+        prefsDataStore.setFirstRunFalse()
+    }
+
+    // Login
+    suspend fun login(username: String, password: String): Boolean {
+        val user = dao.getUserByUsername(username)
         return user?.password == password
     }
 
-    suspend fun changePassword(old: String, new: String): Boolean {
-        val user = dao.getUser() ?: return false
-        return if (user.password == old) {
-            dao.saveUser(User(password = new))
+    // Cambiar contraseña
+    suspend fun changePassword(username: String, oldPassword: String, newPassword: String): Boolean {
+        val user = dao.getUserByUsername(username) ?: return false
+        return if (user.password == oldPassword) {
+            dao.saveUser(user.copy(password = newPassword))
             true
         } else {
             false
         }
     }
+
+    // Obtener usuario actual (para la sesión)
+    suspend fun getUser(username: String): User? {
+        return dao.getUserByUsername(username)
+    }
 }
-
-

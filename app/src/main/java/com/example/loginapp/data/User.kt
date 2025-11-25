@@ -5,11 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "user")
 data class User(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val username: String,  // Ahora el username es la clave primaria
     val password: String
-    // Add other fields for your user data here
-    // For example:
-    // val username: String,
-    // val email: String
 )

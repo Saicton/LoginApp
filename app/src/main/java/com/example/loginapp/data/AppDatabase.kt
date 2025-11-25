@@ -5,8 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-
-@Database(entities = [User::class], version = 2, exportSchema = false)  // Incrementé la versión
+@Database(entities = [User::class], version = 3, exportSchema = false)  // ⚠️ Versión 3
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 
@@ -21,7 +20,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "app.db"
                 )
-                    .fallbackToDestructiveMigration()  // Agregado: recrea la BD cuando hay cambios
+                    .fallbackToDestructiveMigration()  // Recrea la BD con cambios
                     .build()
                     .also { INSTANCE = it }
             }
